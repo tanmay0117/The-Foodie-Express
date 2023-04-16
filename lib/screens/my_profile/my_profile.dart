@@ -79,7 +79,7 @@ class ProfilePage extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Raj Tarlekar",
+                                        "User",
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
                                           color: textColor,
@@ -89,7 +89,7 @@ class ProfilePage extends StatelessWidget {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      Text("tarraj15@gmail.com"),
+                                      Text("user@gmail.com"),
                                     ],
                                   ), //name and email
                                   SizedBox(
@@ -159,7 +159,7 @@ class ProfilePage extends StatelessWidget {
               backgroundColor: primaryColor,
               child: CircleAvatar(
                 backgroundImage: NetworkImage(
-                    'https://drive.google.com/file/d/1o_6-ceJgGtWHWNBLRHmWgRMFlR4prmLC/view?usp=share_link'),
+                    'https://s3.envato.com/files/328957910/vegi_thumb.png'),
                 radius: 45,
                 backgroundColor: Colors.white,
               ),

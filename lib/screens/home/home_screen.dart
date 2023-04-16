@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'package:food_app/providers/product_provider.dart';
 import 'package:food_app/screens/home/drawer_side.dart';
 import 'package:food_app/screens/search/search.dart';
+import 'package:provider/provider.dart';
 
 import '../../config/colors.dart';
 import 'single_product.dart';
@@ -8,12 +10,18 @@ import 'single_product.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/screens/home/product_overview/product_overview.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
-  BuildContext? get context => null;
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-  Widget _buildFreshProduct() {
+class _HomeScreenState extends State<HomeScreen> {
+  // BuildContext? get context => null;
+  late ProductProvider productProvider;
+
+  Widget _buildCakeProduct() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -36,51 +44,84 @@ class HomeScreen extends StatelessWidget {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            children: [
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-            ],
+            children: productProvider.getCakesProductDataList.map(
+              (cakesProductData) {
+                return SingleProduct(
+                  productName: cakesProductData.productName,
+                  productImage: cakesProductData.productImage,
+                  productPrice: cakesProductData.productPrice,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductOverview(
+                          productName: cakesProductData.productName,
+                          productImage: cakesProductData.productImage,
+                          productPrice: cakesProductData.productPrice,
+                        ),
+                      ) as Route<Object?>,
+                    );
+                  },
+                );
+              },
+            ).toList(),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildHerbsProduct() {
+  Widget _buildBreadProduct() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Breads',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                'View All',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: productProvider.getBreadsProductDataList.map(
+              (breadsProductData) {
+                return SingleProduct(
+                  productName: breadsProductData.productName,
+                  productImage: breadsProductData.productImage,
+                  productPrice: breadsProductData.productPrice,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductOverview(
+                          productName: breadsProductData.productName,
+                          productImage: breadsProductData.productImage,
+                          productPrice: breadsProductData.productPrice,
+                        ),
+                      ) as Route<Object?>,
+                    );
+                  },
+                );
+              },
+            ).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBeverageProduct() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -103,111 +144,27 @@ class HomeScreen extends StatelessWidget {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            children: [
-              SingleProduct(
-                productName: 'Fresh pudina',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg',
-                onTap: () {},
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCakesProduct() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Beverages',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(
-                'View All',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://c.ndtvimg.com/2019-11/hdmci5_starbucks_625x300_05_November_19.jpg?im=FaceCrop,algorithm=dnn,width=1200,height=886',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://c.ndtvimg.com/2019-11/hdmci5_starbucks_625x300_05_November_19.jpg?im=FaceCrop,algorithm=dnn,width=1200,height=886',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://c.ndtvimg.com/2019-11/hdmci5_starbucks_625x300_05_November_19.jpg?im=FaceCrop,algorithm=dnn,width=1200,height=886',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://c.ndtvimg.com/2019-11/hdmci5_starbucks_625x300_05_November_19.jpg?im=FaceCrop,algorithm=dnn,width=1200,height=886',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://c.ndtvimg.com/2019-11/hdmci5_starbucks_625x300_05_November_19.jpg?im=FaceCrop,algorithm=dnn,width=1200,height=886',
-                onTap: () {},
-              ),
-              SingleProduct(
-                productName: 'Fresh mint',
-                productImage:
-                    'https://c.ndtvimg.com/2019-11/hdmci5_starbucks_625x300_05_November_19.jpg?im=FaceCrop,algorithm=dnn,width=1200,height=886',
-                onTap: () {},
-              ),
-            ],
+            children: productProvider.getBeveragesProductDataList.map(
+              (beveragesProductData) {
+                return SingleProduct(
+                  productName: beveragesProductData.productName,
+                  productImage: beveragesProductData.productImage,
+                  productPrice: beveragesProductData.productPrice,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductOverview(
+                          productName: beveragesProductData.productName,
+                          productImage: beveragesProductData.productImage,
+                          productPrice: beveragesProductData.productPrice,
+                        ),
+                      ) as Route<Object?>,
+                    );
+                  },
+                );
+              },
+            ).toList(),
           ),
         ),
       ],
@@ -215,7 +172,19 @@ class HomeScreen extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    ProductProvider productProvider = Provider.of(context, listen: false);
+    productProvider.fetchCakesProductData();
+    productProvider.fetchBreadsProductData();
+    productProvider.fetchBeveragesProductData();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    productProvider = Provider.of(context);
+    // productProvider.fetchCakesProductData();
     return Scaffold(
       drawer: DrawerSide(),
       appBar: AppBar(
@@ -264,11 +233,11 @@ class HomeScreen extends StatelessWidget {
                 image: DecorationImage(
                   fit: BoxFit.cover,
                   image: NetworkImage(
-                      'https://lh3.googleusercontent.com/wCLuZ-gQpzDwItt66qB_fyE93GbmoTNyGNggP_XekjCmuPxxtbC5GsjQ5L5smqgdhFG_4qnOFHruU8nPG2ygbIzTFaTlTwpldA2gEXn3nmUS4nn6HgL8K7r_ui7mzy8JRxZy6zVWAcfEeuI7ZiC4cm0qJQy3FZwMM6i4TRSJG2p3HONTRgMTsESSZJfWHYmeQ-YjJsUbHegerg65A2PWJtpfDE73tn-odA_VJdQyyWoY0ldI6C3oL7BcpO1dSG-6ocOEosVEYeXnXaG2Lqht2rPYetvDVx00e1XJO7uyYfR81P58MRhCkCVYDzZX-JShKkC3eMLm3_Ua2cA-x7UOWgIc2tAQr14Asx7OD4icJEe3Wbs9t4ekmYQHZrdEG-wNSrA0SBaEsRevPyEcLg16magWTXrrGGUni9rqwTIks87fdeBWh3VMJncbIwa9U2gmLaVWQjAf46-wT4N6DwZro2wic_qhO1HuNS0aeTdAmnEoR4z3DGD5vRaULBrHuexOr01jOTO7AcqBX6-ojrw1gEVN-IwYOstlepeclhp8m1u43ZYMToFv1ntxUtajXKFu7rJgVH8LYAOBea1fTm3FKZzadOKoIqEkiIGEaCncaWYKRTLvjfIeB0aTa0eheNP1zMrfkAZY5jGKPV57-Pvi_aE9COGE5o7C14Q4KtnWjM3zMu-xt4ttzfFEMmm422jUMfINk6lrrXO2qFw8QDmmDuOl03lJKHe6t9qnDOWVJKkxAVUerjks3lg-OiczHfb0F356NVRbA67JnhHLUP7NE71crQZTKu8Qli-te2Xg2aLEHH21DInvrlgqJjO5EvF34Bvmk9UvkJ62fYW39bbmnUL3l7xJTWHS8854tr4538MZoINpW4GvZM-8L7ZWWS0Z2n-3o2re3Ba9IgqBrJAz6cO9zYew5c5trXJD=w1244-h933-s-no?authuser=0'),
+                      'https://static.vecteezy.com/system/resources/previews/004/925/284/original/luxury-3d-background-sales-offer-discount-grand-prize-for-marketing-product-vector.jpg'),
                 ),
               ),
               height: 150,
-              // width: 500,
+              // width: 400,
               child: Row(
                 children: [
                   Expanded(
@@ -313,7 +282,7 @@ class HomeScreen extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 30,
-                              color: Colors.green[100],
+                              color: Colors.blueGrey,
                             ),
                           ),
                           Padding(
@@ -321,7 +290,7 @@ class HomeScreen extends StatelessWidget {
                               left: 30,
                             ),
                             child: Text(
-                              'On all vegetable products',
+                              'On all Cake Products',
                               style: TextStyle(
                                 color: Colors.white,
                               ),
@@ -337,9 +306,9 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ), // Top photo containing our photo and vegi logo
-            _buildFreshProduct(),
-            _buildHerbsProduct(),
-            _buildCakesProduct(),
+            _buildCakeProduct(),
+            _buildBreadProduct(),
+            _buildBeverageProduct(),
           ],
         ),
       ),

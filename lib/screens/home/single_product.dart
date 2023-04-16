@@ -4,11 +4,13 @@ import 'product_overview/product_overview.dart';
 class SingleProduct extends StatelessWidget {
   final String productImage;
   final String productName;
+  final int productPrice;
   final Function onTap;
   const SingleProduct(
       {required this.productImage,
       required this.productName,
-      required this.onTap});
+      required this.onTap,
+      required this.productPrice});
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,7 @@ class SingleProduct extends StatelessWidget {
                     builder: (context) => ProductOverview(
                       productImage: productImage,
                       productName: productName,
+                      productPrice: productPrice,
                     ),
                   ),
                 );
@@ -60,7 +63,7 @@ class SingleProduct extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '50\$/500 Gram',
+                    '$productPrice\$/500 Gram',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.grey,
