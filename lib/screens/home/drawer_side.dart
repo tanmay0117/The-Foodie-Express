@@ -24,6 +24,7 @@ class DrawerSide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool _debugLocked = false;
     return Drawer(
       child: Container(
         color: primaryColor,
@@ -85,12 +86,13 @@ class DrawerSide extends StatelessWidget {
               iconData: Icons.card_travel,
               title: "Review Cart",
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ReviewCart(),
-                  ),
-                );
+                print('Navigating to Review Cart');
+                Future.delayed(Duration.zero, () {
+                  assert(!_debugLocked);
+
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ReviewCart()));
+                });
               },
             ),
             listTile(

@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:food_app/config/colors.dart';
 
 class SingleItem extends StatelessWidget {
   // const SingleItem({Key? key}) : super(key: key);
+  // ProductModel productModel;
+  String productImage;
+  String productName;
+  int productPrice;
+  String productId;
+  Function onDelete;
+  // ReviewCartModel data;
+  // Function? onDelete;
+// int productQuantity;
 
   bool isBool = false;
-  SingleItem({required this.isBool});
+  SingleItem(
+      {required this.isBool,
+      required this.productName,
+      required this.productPrice,
+      required this.productImage,
+      required this.productId,
+      int? productQuantity,
+      required this.onDelete});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -22,8 +38,7 @@ class SingleItem extends StatelessWidget {
                 child: Container(
                   height: 100,
                   child: Center(
-                    child: Image.network(
-                        'https://www.eatrightbasket.com/wp-content/uploads/2019/02/SS_Veg_28.jpg'),
+                    child: Image.network(productImage),
                   ),
                 ),
               ),
@@ -39,12 +54,12 @@ class SingleItem extends StatelessWidget {
                       Column(
                         children: [
                           Text(
-                            'Product Name',
+                            productName,
                             style: TextStyle(
                                 color: textColor, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '\$50/50 Grams',
+                            '${productPrice}\$/500 gm',
                             style: TextStyle(
                               color: Colors.grey,
                             ),
@@ -130,10 +145,15 @@ class SingleItem extends StatelessWidget {
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.delete,
-                              size: 30,
-                              color: Colors.black54,
+                            InkWell(
+                              onTap: () {
+                                onDelete();
+                              },
+                              child: Icon(
+                                Icons.delete,
+                                size: 30,
+                                color: Colors.black54,
+                              ),
                             ),
                             SizedBox(
                               height: 7,
