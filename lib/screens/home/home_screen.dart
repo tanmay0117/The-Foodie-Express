@@ -1,14 +1,12 @@
-import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:food_app/providers/product_provider.dart';
 import 'package:food_app/screens/home/drawer_side.dart';
+import 'package:food_app/screens/home/product_overview/product_overview.dart';
 import 'package:food_app/screens/search/search.dart';
 import 'package:provider/provider.dart';
 
 import '../../config/colors.dart';
 import 'single_product.dart';
-
-import 'package:flutter/material.dart';
-import 'package:food_app/screens/home/product_overview/product_overview.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,9 +32,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 'Cakes',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text(
-                'View All',
-                style: TextStyle(color: Colors.grey),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Search(
+                        search: productProvider.getCakesProductDataList,
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  'View All',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
             ],
           ),
@@ -50,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   productName: cakesProductData.productName,
                   productImage: cakesProductData.productImage,
                   productPrice: cakesProductData.productPrice,
+                  productId: cakesProductData.productId,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -84,9 +95,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 'Breads',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text(
-                'View All',
-                style: TextStyle(color: Colors.grey),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Search(
+                          search: productProvider.getBreadsProductDataList),
+                    ),
+                  );
+                },
+                child: Text(
+                  'View All',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
             ],
           ),
@@ -100,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   productName: breadsProductData.productName,
                   productImage: breadsProductData.productImage,
                   productPrice: breadsProductData.productPrice,
+                  productId: breadsProductData.productId,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -134,9 +157,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 'Beverages',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              Text(
-                'View All',
-                style: TextStyle(color: Colors.grey),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Search(
+                          search: productProvider.getBeveragesProductDataList),
+                    ),
+                  );
+                },
+                child: Text(
+                  'View All',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
             ],
           ),
@@ -150,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   productName: beveragesProductData.productName,
                   productImage: beveragesProductData.productImage,
                   productPrice: beveragesProductData.productPrice,
+                  productId: beveragesProductData.productId,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -178,6 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
     productProvider.fetchCakesProductData();
     productProvider.fetchBreadsProductData();
     productProvider.fetchBeveragesProductData();
+
     super.initState();
   }
 
@@ -204,7 +240,9 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => Search(),
+                  builder: (context) => Search(
+                    search: productProvider.getAllProductDataList,
+                  ),
                 ),
               );
             },

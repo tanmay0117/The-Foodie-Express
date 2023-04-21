@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import '../widgets/count.dart';
 import 'product_overview/product_overview.dart';
 
 class SingleProduct extends StatelessWidget {
   final String productImage;
   final String productName;
   final int productPrice;
+  final String productId;
   final Function onTap;
   const SingleProduct(
       {required this.productImage,
       required this.productName,
       required this.onTap,
-      required this.productPrice});
+      required this.productPrice,
+      required this.productId});
 
   @override
   Widget build(BuildContext context) {
@@ -115,39 +118,11 @@ class SingleProduct extends StatelessWidget {
                       SizedBox(
                         width: 8,
                       ),
-                      Expanded(
-                        child: Container(
-                          height: 28,
-                          width: 30,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8),
-                            // color: Colors.grey,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Icon(
-                                Icons.remove,
-                                size: 10,
-                                color: Color(0xffd0b84c),
-                              ),
-                              Text(
-                                '1',
-                                style: TextStyle(
-                                  color: Color(0xffd0b84c),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 10,
-                                ),
-                              ),
-                              Icon(
-                                Icons.add,
-                                size: 10,
-                                color: Color(0xffd0b84c),
-                              ),
-                            ],
-                          ),
-                        ),
+                      Count(
+                        productId: productId,
+                        productImage: productImage,
+                        productName: productName,
+                        productPrice: productPrice,
                       ),
                     ],
                   ),

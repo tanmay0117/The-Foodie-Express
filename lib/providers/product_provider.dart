@@ -7,6 +7,12 @@ class ProductProvider with ChangeNotifier {
   //ProductProvider provides us with all the product's data in the form of list
   late ProductModel productModel;
 
+  productModels(QueryDocumentSnapshot element)
+  {
+    productModel = ProductModel(productName: element.get("productName"), productImage: element.get("productImage"), productPrice: element.get("productPrice"), productId: element.get("productId"),);
+  }
+
+  List<ProductModel> allProductsList = [];
   // Fetch Data for Cakes
   List<ProductModel> cakeProductsList = [];
   fetchCakesProductData() async {
@@ -17,16 +23,13 @@ class ProductProvider with ChangeNotifier {
     value.docs.forEach(
       //this iterates through all the 'documents' of cake products
       (element) {
-        productModel = ProductModel(
-          productName: element.get("productName"),
-          productImage: element.get("productImage"),
-          productPrice: element.get("productPrice"),
-        );
+        productModels(element);
         newList.add(productModel);
       },
     );
 
     cakeProductsList = newList;
+    allProductsList += newList;
     notifyListeners();
   } // gives all cake data in the form of a list. This is a <ProductModel> list which has array of all objects.
 
@@ -43,17 +46,15 @@ class ProductProvider with ChangeNotifier {
 
     value.docs.forEach(
       (element) {
-        productModel = ProductModel(
-          productName: element.get("productName"),
-          productImage: element.get("productImage"),
-          productPrice: element.get("productPrice"),
-        );
+        productModels(element);
         newList.add(productModel);
         // print(element);
       },
     );
 
     breadProductsList = newList;
+    allProductsList += newList;
+
     notifyListeners();
   }
 
@@ -71,20 +72,24 @@ class ProductProvider with ChangeNotifier {
 
     value.docs.forEach(
       (element) {
-        productModel = ProductModel(
-          productName: element.get("productName"),
-          productImage: element.get("productImage"),
-          productPrice: element.get("productPrice"),
-        );
+        productModels(element);
         newList.add(productModel);
       },
     );
 
     beverageProductsList = newList;
+    allProductsList += newList;
+
     notifyListeners();
   }
 
   List<ProductModel> get getBeveragesProductDataList {
     return beverageProductsList;
   }
+
+  List<ProductModel> get getAllProductDataList {
+    return allProductsList;
+  }
+
+
 }
