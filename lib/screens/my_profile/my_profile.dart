@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:food_app/providers/user_provider.dart';
 import 'package:food_app/screens/home/drawer_side.dart';
+import 'package:provider/provider.dart';
 
 import '../../config/colors.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+class ProfilePage extends StatefulWidget {
+  UserProvider userProvider;
+  ProfilePage({required this.userProvider});
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget listTile(
       {required IconData iconData,
@@ -29,9 +37,13 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
+    // UserProvider userProvider = Provider.of(context);
+    var userData = widget.userProvider.currentUserData;
     return Scaffold(
       backgroundColor: primaryColor,
-      drawer: DrawerSide(),
+      drawer: DrawerSide(
+        userProvider: widget.userProvider,
+      ),
       appBar: AppBar(
         backgroundColor: primaryColor,
         elevation: 0.0,
@@ -79,7 +91,7 @@ class ProfilePage extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "User",
+                                        userData.userName,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w600,
                                           color: textColor,
@@ -89,7 +101,9 @@ class ProfilePage extends StatelessWidget {
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      Text("user@gmail.com"),
+                                      Text(
+                                        userData.userEmail,
+                                      ),
                                     ],
                                   ), //name and email
                                   SizedBox(
@@ -158,7 +172,7 @@ class ProfilePage extends StatelessWidget {
               radius: 50,
               backgroundColor: primaryColor,
               child: CircleAvatar(
-                backgroundImage: NetworkImage(
+                backgroundImage: NetworkImage(userData.userImage ??
                     'https://s3.envato.com/files/328957910/vegi_thumb.png'),
                 radius: 45,
                 backgroundColor: Colors.white,

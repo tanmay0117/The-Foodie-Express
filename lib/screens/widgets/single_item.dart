@@ -1,28 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
+import 'package:food_app/screens/widgets/count.dart';
+import 'package:food_app/screens/widgets/product_unit.dart';
 
-class SingleItem extends StatelessWidget {
+class SingleItem extends StatefulWidget {
   // const SingleItem({Key? key}) : super(key: key);
   // ProductModel productModel;
   String productImage;
   String productName;
   int productPrice;
   String productId;
+  List<dynamic> productUnit;
   Function onDelete;
+  var unitData;
   // ReviewCartModel data;
   // Function? onDelete;
 // int productQuantity;
 
   bool isBool = false;
-  SingleItem(
-      {required this.isBool,
-      required this.productName,
-      required this.productPrice,
-      required this.productImage,
-      required this.productId,
-      int? productQuantity,
-      required this.onDelete});
+  SingleItem({
+    required this.isBool,
+    required this.productName,
+    required this.productPrice,
+    required this.productImage,
+    required this.productId,
+    int? productQuantity,
+    required this.onDelete,
+    required this.unitData,
+    required this.productUnit,
+  });
 
+  @override
+  State<SingleItem> createState() => _SingleItemState();
+}
+
+class _SingleItemState extends State<SingleItem> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,7 +52,7 @@ class SingleItem extends StatelessWidget {
                 child: Container(
                   height: 100,
                   child: Center(
-                    child: Image.network(productImage),
+                    child: Image.network(widget.productImage),
                   ),
                 ),
               ),
@@ -46,7 +60,7 @@ class SingleItem extends StatelessWidget {
                 child: Container(
                   height: 100,
                   child: Column(
-                    mainAxisAlignment: isBool == false
+                    mainAxisAlignment: widget.isBool == false
                         ? MainAxisAlignment.spaceAround
                         : MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,53 +68,87 @@ class SingleItem extends StatelessWidget {
                       Column(
                         children: [
                           Text(
-                            productName,
+                            widget.productName,
                             style: TextStyle(
                                 color: textColor, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '${productPrice}\$/500 gm',
+                            '${widget.productPrice}\$/500 gm',
                             style: TextStyle(
                               color: Colors.grey,
                             ),
                           ),
                         ],
                       ),
-                      isBool == false
-                          ? Container(
-                              margin: EdgeInsets.only(
-                                right: 15,
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              height: 35,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      '50 Grams',
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 14,
-                                      ),
-                                    ),
+                      widget.isBool == false
+                          ? Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 1),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // print("FUCK");
+                                    showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Wrap(
+                                            children: [
+                                              ...widget.productUnit
+                                                  .map<Widget>((data) {
+                                                return Column(
+                                                  children: [
+                                                    GestureDetector(
+                                                      child: ListTile(
+                                                        // leading: Icon(Icons.share),
+                                                        title: Center(
+                                                          child: Text(
+                                                            data,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      onTap: () {
+                                                        setState(() {
+                                                          widget.unitData =
+                                                              data;
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "ReviewCart")
+                                                              .doc(FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser
+                                                                  ?.uid)
+                                                              .collection(
+                                                                  "YourReviewCart")
+                                                              .doc(widget
+                                                                  .productId)
+                                                              .update({
+                                                            "unitData":
+                                                                widget.unitData
+                                                          });
+                                                        });
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                    Divider(
+                                                      height: 1,
+                                                    ),
+                                                  ],
+                                                );
+                                              }),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: ProductUnit(
+                                    title: widget.unitData,
+                                    // productUnit: widget.productUnit,
                                   ),
-                                  Center(
-                                    child: Icon(
-                                      Icons.arrow_drop_down_sharp,
-                                      size: 20,
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
+                              flex: 1,
                             )
-                          : Text("50 Gram"),
+                          : Text(widget.unitData),
                     ],
                   ),
                 ),
@@ -108,46 +156,26 @@ class SingleItem extends StatelessWidget {
               Expanded(
                 child: Container(
                   height: 100,
-                  padding: isBool == false
+                  padding: widget.isBool == false
                       ? EdgeInsets.symmetric(
                           horizontal: 15,
                           vertical: 32,
                         )
                       : EdgeInsets.only(left: 15, right: 15),
-                  child: isBool == false
-                      ? Container(
-                          height: 25,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.add,
-                                  color: primaryColor,
-                                  size: 20,
-                                ),
-                                Text(
-                                  'ADD',
-                                  style: TextStyle(
-                                    color: primaryColor,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                  child: widget.isBool == false
+                      ? Count(
+                          productName: widget.productName,
+                          productPrice: widget.productPrice,
+                          productImage: widget.productImage,
+                          productId: widget.productId,
+                          unitData: widget.unitData,
                         )
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             InkWell(
                               onTap: () {
-                                onDelete();
+                                widget.onDelete();
                               },
                               child: Icon(
                                 Icons.delete,
@@ -158,33 +186,13 @@ class SingleItem extends StatelessWidget {
                             SizedBox(
                               height: 7,
                             ),
-                            Container(
-                              height: 25,
-                              width: 70,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.add,
-                                      color: primaryColor,
-                                      size: 20,
-                                    ),
-                                    Text(
-                                      'ADD',
-                                      style: TextStyle(
-                                        color: primaryColor,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
+                            Count(
+                              productName: widget.productName,
+                              productPrice: widget.productPrice,
+                              productImage: widget.productImage,
+                              productId: widget.productId,
+                              unitData: widget.unitData,
+                            ),
                           ],
                         ),
                 ),

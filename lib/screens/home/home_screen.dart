@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/providers/product_provider.dart';
+import 'package:food_app/providers/user_provider.dart';
 import 'package:food_app/screens/home/drawer_side.dart';
 import 'package:food_app/screens/home/product_overview/product_overview.dart';
+import 'package:food_app/screens/review_cart/review_cart.dart';
 import 'package:food_app/screens/search/search.dart';
 import 'package:provider/provider.dart';
 
@@ -61,18 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   productImage: cakesProductData.productImage,
                   productPrice: cakesProductData.productPrice,
                   productId: cakesProductData.productId,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductOverview(
-                          productName: cakesProductData.productName,
-                          productImage: cakesProductData.productImage,
-                          productPrice: cakesProductData.productPrice,
-                        ),
-                      ) as Route<Object?>,
-                    );
-                  },
+                  productUnit: cakesProductData,
                 );
               },
             ).toList(),
@@ -123,18 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   productImage: breadsProductData.productImage,
                   productPrice: breadsProductData.productPrice,
                   productId: breadsProductData.productId,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductOverview(
-                          productName: breadsProductData.productName,
-                          productImage: breadsProductData.productImage,
-                          productPrice: breadsProductData.productPrice,
-                        ),
-                      ) as Route<Object?>,
-                    );
-                  },
+                  productUnit: breadsProductData,
                 );
               },
             ).toList(),
@@ -185,18 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   productImage: beveragesProductData.productImage,
                   productPrice: beveragesProductData.productPrice,
                   productId: beveragesProductData.productId,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductOverview(
-                          productName: beveragesProductData.productName,
-                          productImage: beveragesProductData.productImage,
-                          productPrice: beveragesProductData.productPrice,
-                        ),
-                      ) as Route<Object?>,
-                    );
-                  },
+                  productUnit: beveragesProductData,
                 );
               },
             ).toList(),
@@ -220,9 +189,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     productProvider = Provider.of(context);
+    UserProvider userProvider = Provider.of(context);
+    userProvider.getUserData();
     // productProvider.fetchCakesProductData();
     return Scaffold(
-      drawer: DrawerSide(),
+      drawer: DrawerSide(
+        userProvider: userProvider,
+      ),
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black),
         backgroundColor: Color(0xffd6b738),
@@ -242,6 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(
                   builder: (context) => Search(
                     search: productProvider.getAllProductDataList,
+                    // unitData: unit,
                   ),
                 ),
               );
@@ -252,10 +226,20 @@ class _HomeScreenState extends State<HomeScreen> {
               right: 15,
               left: 10,
             ),
-            child: Icon(
-              Icons.shop,
-              size: 20,
-              color: Colors.black,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ReviewCart(),
+                  ),
+                );
+              },
+              child: Icon(
+                Icons.shop,
+                size: 20,
+                color: Colors.black,
+              ),
             ),
           ),
         ],

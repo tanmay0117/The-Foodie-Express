@@ -1,7 +1,14 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
+import 'package:food_app/screens/widgets/count.dart';
+import 'package:provider/provider.dart';
+
+import '../../../models/products_model.dart';
+import '../../../providers/review_cart_provider.dart';
 
 enum SigningCharacter { fill, outline }
 
@@ -9,10 +16,15 @@ class ProductOverview extends StatefulWidget {
   final String productName;
   final String productImage;
   final int productPrice;
-  ProductOverview(
-      {required this.productImage,
-      required this.productName,
-      required this.productPrice});
+  final String productID;
+  var unitData;
+  ProductOverview({
+    required this.productImage,
+    required this.productName,
+    required this.productPrice,
+    required this.productID,
+    required this.unitData,
+  });
 
   @override
   State<ProductOverview> createState() => _ProductOverviewState();
@@ -21,12 +33,48 @@ class ProductOverview extends StatefulWidget {
 class _ProductOverviewState extends State<ProductOverview> {
   SigningCharacter _character = SigningCharacter.fill;
 
-  Widget bottomNavigationBar(
-      {required Color iconColor,
-      required Color backgroundColor,
-      required Color color,
-      required String title,
-      required IconData iconData}) {
+  int count = 1;
+  bool isTrue = false;
+
+  // late QuerySnapshot unitData;
+  // getUnitData(ProductModel data) async {
+  //   unitData = await FirebaseFirestore.instance
+  //       .collection("ReviewCart")
+  //       .doc(FirebaseAuth.instance.currentUser?.uid)
+  //       .collection("YourReviewCart")
+  //       .doc(data.productId)
+  //       .collection("unitData")
+  //       .get();
+  // }
+
+  getAddAndQuantity() {
+    FirebaseFirestore.instance
+        .collection("ReviewCart")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("YourReviewCart")
+        .doc(widget.productID)
+        .get()
+        .then((value) => {
+              if (mounted)
+                {
+                  if (value.exists)
+                    {
+                      setState(() {
+                        count = value.get("cartQuantity");
+                        isTrue = value.get("isAdd");
+                      })
+                    }
+                }
+            });
+  }
+
+  Widget bottomNavigationBar({
+    required Color iconColor,
+    required Color backgroundColor,
+    required Color color,
+    required String title,
+    required IconData iconData,
+  }) {
     return Expanded(
       child: Container(
         padding: EdgeInsets.all(20),
@@ -54,6 +102,8 @@ class _ProductOverviewState extends State<ProductOverview> {
 
   @override
   Widget build(BuildContext context) {
+    ReviewCartProvider reviewCartProvider = Provider.of(context);
+    getAddAndQuantity();
     return Scaffold(
       bottomNavigationBar: Row(
         children: [
@@ -139,29 +189,118 @@ class _ProductOverviewState extends State<ProductOverview> {
                           ],
                         ),
                         Text('\$${widget.productPrice}'),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
+                        Expanded(
+                          child: Container(
+                            height: 28,
+                            width: 30,
+                            decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.add,
-                                size: 15,
-                                color: primaryColor,
-                              ),
-                              Text(
-                                'ADD',
-                                style: TextStyle(color: primaryColor),
-                              ),
-                            ],
+                              borderRadius: BorderRadius.circular(8),
+                              // color: Colors.grey,
+                            ),
+                            child: isTrue == true
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            if (count > 0) {
+                                              count--;
+                                            }
+                                          });
+                                          if (count > 0) {
+                                            reviewCartProvider
+                                                .updateReviewCartData(
+                                                    cartId: widget.productID,
+                                                    cartName:
+                                                        widget.productName,
+                                                    cartImage:
+                                                        widget.productImage,
+                                                    cartPrice:
+                                                        widget.productPrice,
+                                                    cartQuantity: count,
+                                                    unitData: widget.unitData
+                                                    // isAdd: true,
+                                                    );
+                                          } else if (count == 0) {
+                                            reviewCartProvider
+                                                .reviewCartDataDelete(
+                                                    widget.productID);
+                                            // count = 1;
+                                            // isTrue = false;
+                                            setState(() {
+                                              count = 1;
+                                              isTrue = false;
+                                            });
+                                          }
+                                        },
+                                        child: Icon(
+                                          Icons.remove,
+                                          size: 10,
+                                          color: Color(0xffd0b84c),
+                                        ),
+                                      ),
+                                      Text(
+                                        '$count',
+                                        style: TextStyle(
+                                          color: Color(0xffd0b84c),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            count++;
+                                          });
+                                          reviewCartProvider
+                                              .updateReviewCartData(
+                                                  cartId: widget.productID,
+                                                  cartName: widget.productName,
+                                                  cartImage:
+                                                      widget.productImage,
+                                                  cartPrice:
+                                                      widget.productPrice,
+                                                  cartQuantity: count,
+                                                  unitData: widget.unitData
+                                                  // isAdd: true,
+                                                  );
+                                        },
+                                        child: Icon(
+                                          Icons.add,
+                                          size: 10,
+                                          color: Color(0xffd0b84c),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : Center(
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          isTrue = true;
+                                        });
+                                        // reviewCartProvider.addReviewCartData(cartId: cartId, cartName: cartName, cartImage: cartImage, cartPrice: cartPrice, cartQuantity: cartQuantity)
+                                        reviewCartProvider.addReviewCartData(
+                                          cartId: widget.productID,
+                                          cartName: widget.productName,
+                                          cartImage: widget.productImage,
+                                          cartPrice: widget.productPrice,
+                                          cartQuantity: count,
+                                          unitData: widget.unitData,
+                                          isAdd: true,
+                                        );
+                                      },
+                                      child: Text(
+                                        "ADD",
+                                        style: TextStyle(color: primaryColor),
+                                      ),
+                                    ),
+                                  ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),

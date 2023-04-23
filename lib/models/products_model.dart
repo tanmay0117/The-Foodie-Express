@@ -3,9 +3,12 @@ class ProductModel {
   String productImage;
   int productPrice;
   String productId;
-  ProductModel(
-      {required this.productName,
-      required this.productImage,
-      required this.productPrice,
-      required this.productId,});
+  List<dynamic> productUnit;
+  ProductModel({
+    required this.productName,
+    required this.productImage,
+    required this.productPrice,
+    required this.productId,
+    required this.productUnit,
+  });
 }

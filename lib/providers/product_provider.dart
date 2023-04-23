@@ -7,9 +7,14 @@ class ProductProvider with ChangeNotifier {
   //ProductProvider provides us with all the product's data in the form of list
   late ProductModel productModel;
 
-  productModels(QueryDocumentSnapshot element)
-  {
-    productModel = ProductModel(productName: element.get("productName"), productImage: element.get("productImage"), productPrice: element.get("productPrice"), productId: element.get("productId"),);
+  productModels(QueryDocumentSnapshot element) {
+    productModel = ProductModel(
+      productName: element.get("productName"),
+      productImage: element.get("productImage"),
+      productPrice: element.get("productPrice"),
+      productId: element.get("productId"),
+      productUnit: element.get('productUnit'),
+    );
   }
 
   List<ProductModel> allProductsList = [];
@@ -90,6 +95,4 @@ class ProductProvider with ChangeNotifier {
   List<ProductModel> get getAllProductDataList {
     return allProductsList;
   }
-
-
 }

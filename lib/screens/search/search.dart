@@ -1,18 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
 import 'package:food_app/screens/widgets/single_item.dart';
 
 import '../../models/products_model.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Search extends StatefulWidget {
   // const Search({Key? key}) : super(key: key);
+  // QuerySnapshot unitData = await FirebaseFirestore.instance.collection("ReviewCart").doc(FirebaseAuth.instance.currentUser?.uid).collection("YourReviewCart").doc()
 
   List<ProductModel> search;
+  // String unitData;
   Search({required this.search});
 
   @override
   State<Search> createState() => _SearchState();
 }
+
+Map<String, String> unitDatas = {'hey': 'hi'};
 
 class _SearchState extends State<Search> {
   searchItem(String query) {
@@ -28,6 +36,10 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     List<ProductModel> _searchItem = searchItem(query
         .toLowerCase()); // here when query is null all the iterms are searched hence we used _searchItem on line no 83
+    unitDatas.clear();
+    for (int i = 0; i < _searchItem.length; i++) {
+      unitDatas[_searchItem[i].productId] = _searchItem[i].productUnit[0];
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
@@ -81,6 +93,25 @@ class _SearchState extends State<Search> {
                 ),
                 Column(
                   children: _searchItem.map((data) {
+                    FirebaseFirestore.instance
+                        .collection("ReviewCart")
+                        .doc(FirebaseAuth.instance.currentUser?.uid)
+                        .collection("YourReviewCart")
+                        .doc(data.productId)
+                        .get()
+                        .then((value) => {
+                              if (mounted)
+                                {
+                                  if (value.exists)
+                                    {
+                                      setState(() {
+                                        unitDatas[data.productId] =
+                                            value.get("unitData");
+                                      })
+                                    }
+                                }
+                            });
+
                     return SingleItem(
                       isBool: false,
                       productId: data.productId,
@@ -88,6 +119,8 @@ class _SearchState extends State<Search> {
                       productImage: data.productImage,
                       productName: data.productName,
                       productPrice: data.productPrice,
+                      unitData: unitDatas[data.productId],
+                      productUnit: data.productUnit,
                       onDelete: () {},
                     );
                   }).toList(),

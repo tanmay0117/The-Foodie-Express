@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
+import 'package:food_app/models/user_model.dart';
 import 'package:food_app/screens/home/home_screen.dart';
 import 'package:food_app/screens/my_profile/my_profile.dart';
 import 'package:food_app/screens/review_cart/review_cart.dart';
+
+import '../../providers/user_provider.dart';
 // import 'package:food_app/screens/my_profile/my_profile.dart';
 
-class DrawerSide extends StatelessWidget {
-  const DrawerSide({Key? key}) : super(key: key);
+class DrawerSide extends StatefulWidget {
+  UserProvider userProvider;
+  DrawerSide({required this.userProvider});
 
+  @override
+  State<DrawerSide> createState() => _DrawerSideState();
+}
+
+class _DrawerSideState extends State<DrawerSide> {
   Widget listTile(
       {required IconData iconData,
       required String title,
@@ -25,50 +34,47 @@ class DrawerSide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool _debugLocked = false;
+    var userData = widget.userProvider.currentUserData;
     return Drawer(
       child: Container(
         color: primaryColor,
         child: ListView(
           children: [
             DrawerHeader(
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 43,
-                    backgroundColor: Colors.white54,
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          'https://s3.envato.com/files/328957910/vegi_thumb.png'),
-                      radius: 40,
-                      backgroundColor: Colors.red,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 43,
+                      backgroundColor: Colors.white54,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(userData.userImage ??
+                            'https://s3.envato.com/files/328957910/vegi_thumb.png'),
+                        radius: 40,
+                        backgroundColor: Colors.red,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Welcome Guest"),
-                      SizedBox(
-                        height: 7,
-                      ),
-                      OutlinedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Login",
-                          style: TextStyle(color: textColor),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          userData.userName,
                         ),
-                        style: OutlinedButton.styleFrom(
-                          // elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(13),
-                          ),
+                        SizedBox(
+                          height: 7,
                         ),
-                      ),
-                    ],
-                  )
-                ],
+                        Text(
+                          userData.userEmail,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
             listTile(
@@ -102,7 +108,9 @@ class DrawerSide extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ProfilePage(),
+                    builder: (context) => ProfilePage(
+                      userProvider: widget.userProvider,
+                    ),
                   ),
                 );
               },
