@@ -1,12 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
 import 'package:food_app/screens/widgets/single_item.dart';
 
 import '../../models/products_model.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class Search extends StatefulWidget {
   // const Search({Key? key}) : super(key: key);
@@ -93,25 +89,6 @@ class _SearchState extends State<Search> {
                 ),
                 Column(
                   children: _searchItem.map((data) {
-                    FirebaseFirestore.instance
-                        .collection("ReviewCart")
-                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                        .collection("YourReviewCart")
-                        .doc(data.productId)
-                        .get()
-                        .then((value) => {
-                              if (mounted)
-                                {
-                                  if (value.exists)
-                                    {
-                                      setState(() {
-                                        unitDatas[data.productId] =
-                                            value.get("unitData");
-                                      })
-                                    }
-                                }
-                            });
-
                     return SingleItem(
                       isBool: false,
                       productId: data.productId,
