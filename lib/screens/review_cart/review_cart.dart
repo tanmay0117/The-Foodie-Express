@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
 import 'package:food_app/models/review_cart_model.dart';
 import 'package:food_app/providers/review_cart_provider.dart';
 import 'package:food_app/screens/widgets/single_item.dart';
 import 'package:provider/provider.dart';
+
+import '../ check_out/delivery_details/delivery_details.dart';
 
 class ReviewCart extends StatefulWidget {
   @override
@@ -57,7 +58,7 @@ class _ReviewCartState extends State<ReviewCart> {
       bottomNavigationBar: ListTile(
         title: Text('Total Amount'),
         subtitle: Text(
-          '\$ 170.00',
+          '\$ ${reviewCartProvider.getTotalPrice()}',
           style: TextStyle(
             color: Colors.green[900],
           ),
@@ -66,7 +67,13 @@ class _ReviewCartState extends State<ReviewCart> {
           width: 160,
           child: MaterialButton(
             child: Text('Submit'),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => DeliveryDetails(),
+                ),
+              );
+            },
             color: primaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),

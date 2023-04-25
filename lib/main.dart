@@ -1,11 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/auth/sign_in.dart';
 import 'package:food_app/config/colors.dart';
+import 'package:food_app/providers/checkout_provider.dart';
 import 'package:food_app/providers/product_provider.dart';
 import 'package:food_app/providers/review_cart_provider.dart';
 import 'package:food_app/providers/user_provider.dart';
-import 'package:food_app/screens/my_profile/my_profile.dart';
-import 'package:food_app/auth/sign_in.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:food_app/providers/user_providerase_core.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -28,6 +29,8 @@ class MyApp extends StatelessWidget {
             create: (context) => UserProvider()),
         ChangeNotifierProvider<ReviewCartProvider>(
             create: (context) => ReviewCartProvider()),
+        ChangeNotifierProvider<CheckoutProvider>(
+            create: (context) => CheckoutProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
