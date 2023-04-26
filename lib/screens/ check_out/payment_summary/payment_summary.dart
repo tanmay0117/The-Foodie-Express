@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
+import 'package:food_app/providers/review_cart_provider.dart';
+import 'package:food_app/screens/%20check_out/payment_summary/my_google_pay.dart';
 import 'package:food_app/screens/%20check_out/payment_summary/single_order_item.dart';
+import 'package:food_app/screens/widgets/single_item.dart';
+import 'package:provider/provider.dart';
+
+import '../../../models/delivery_address.dart';
 
 class PaymentSummary extends StatefulWidget {
-  const PaymentSummary({Key? key}) : super(key: key);
+  DeliveryAddressModel dam;
+  PaymentSummary({required this.dam});
 
   @override
   State<PaymentSummary> createState() => _PaymentSummaryState();
@@ -12,6 +19,19 @@ class PaymentSummary extends StatefulWidget {
 class _PaymentSummaryState extends State<PaymentSummary> {
   @override
   Widget build(BuildContext context) {
+    ReviewCartProvider reviewCartProvider = Provider.of(context);
+    reviewCartProvider.fetchReviewCartData();
+
+    double discount = 30;
+    double discountValue = 0.0;
+    double shippingCharges = 0.0;
+    double totalPrice = reviewCartProvider.getTotalPrice();
+    if (totalPrice > 300) {
+      discountValue = (totalPrice * discount) / 100;
+      shippingCharges = 10;
+    }
+    double total = totalPrice - discountValue - shippingCharges;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
@@ -20,7 +40,7 @@ class _PaymentSummaryState extends State<PaymentSummary> {
       bottomNavigationBar: ListTile(
         title: Text('Total Amount'),
         subtitle: Text(
-          '\$ 100',
+          '\$ $total',
           style: TextStyle(
             color: Colors.green[900],
             fontWeight: FontWeight.bold,
@@ -30,7 +50,13 @@ class _PaymentSummaryState extends State<PaymentSummary> {
           width: 160,
           child: MaterialButton(
             child: Text('Place Order'),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => MyGooglePay(),
+                ),
+              );
+            },
             color: primaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
@@ -40,13 +66,13 @@ class _PaymentSummaryState extends State<PaymentSummary> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: const [
+          children: [
             Padding(
               padding: EdgeInsets.only(top: 30),
               child: ListTile(
                 title: Center(
                   child: Text(
-                    "Siddhant Waghanna",
+                    "${widget.dam.firstName} ${widget.dam.lastName}",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -54,7 +80,7 @@ class _PaymentSummaryState extends State<PaymentSummary> {
                     child: Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 20),
                   child: Text(
-                    "Address Address Address Address",
+                    "${widget.dam.flatNo}, ${widget.dam.building}, ${widget.dam.society}, ${widget.dam.area}, ${widget.dam.pincode},",
                     style: TextStyle(),
                   ),
                 )),
@@ -66,11 +92,11 @@ class _PaymentSummaryState extends State<PaymentSummary> {
             ExpansionTile(
               title: Text("Order Items"),
               children: [
-                SingleOrderItem(),
-                SingleOrderItem(),
-                SingleOrderItem(),
-                SingleOrderItem(),
-                SingleOrderItem(),
+                ...reviewCartProvider.getReviewCartDataList.map((e) {
+                  return SingleOrderItem(
+                    reviewCartModel: e,
+                  );
+                }).toList(),
               ],
             ),
             Divider(
@@ -84,7 +110,7 @@ class _PaymentSummaryState extends State<PaymentSummary> {
                 ),
               ),
               trailing: Text(
-                "\$ 150",
+                "\$ $totalPrice",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -98,7 +124,7 @@ class _PaymentSummaryState extends State<PaymentSummary> {
                 ),
               ),
               trailing: Text(
-                "\$ 10",
+                "\$ $shippingCharges",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -112,7 +138,7 @@ class _PaymentSummaryState extends State<PaymentSummary> {
                 ),
               ),
               trailing: Text(
-                "-   \$ 10",
+                "-   \$ $discountValue",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),

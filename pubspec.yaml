@@ -22,6 +22,9 @@ dependencies:
   cloud_firestore: ^4.5.1
   provider: ^6.0.5
   fluttertoast: ^8.2.1
+  location:
+  google_maps_flutter:
+  pay: ^1.1.1
 
 dev_dependencies:
   flutter_test:

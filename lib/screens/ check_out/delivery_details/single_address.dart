@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
 
 class SingleAddress extends StatelessWidget {
+  String address;
+  String name;
+  String number;
+  String addressType;
+  SingleAddress({
+    required this.address,
+    required this.name,
+    required this.number,
+    required this.addressType,
+  });
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -9,20 +19,22 @@ class SingleAddress extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 8),
           child: ListTile(
-            title: Text("Name"),
+            title: Text(
+              name,
+            ),
             subtitle: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Address Address Address Address Address Address Address Address",
+                  address,
                   style: TextStyle(fontSize: 12),
                 ),
                 SizedBox(
                   height: 5,
                 ),
                 Text(
-                  "Mobile No",
+                  number,
                   style: TextStyle(fontSize: 12),
                 ),
               ],
@@ -36,7 +48,7 @@ class SingleAddress extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  "Home",
+                  addressType,
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),

@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/config/colors.dart';
+import 'package:food_app/models/delivery_address.dart';
+import 'package:food_app/providers/checkout_provider.dart';
 import 'package:food_app/screens/%20check_out/add_new_address/add_new_address.dart';
 import 'package:food_app/screens/%20check_out/delivery_details/single_address.dart';
 import 'package:food_app/screens/%20check_out/payment_summary/payment_summary.dart';
+import 'package:provider/provider.dart';
 
-class DeliveryDetails extends StatelessWidget {
-  List<Widget> address = [
-    SingleAddress(),
-    SingleAddress(),
-    SingleAddress(),
-    SingleAddress(),
-  ];
+class DeliveryDetails extends StatefulWidget {
+  late DeliveryAddressModel value;
+
+  @override
+  State<DeliveryDetails> createState() => _DeliveryDetailsState();
+}
+
+class _DeliveryDetailsState extends State<DeliveryDetails> {
   @override
   Widget build(BuildContext context) {
+    CheckoutProvider deliveryAddressProvider = Provider.of(context);
+    deliveryAddressProvider.fetchDeliveryAddressData();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
@@ -40,7 +46,7 @@ class DeliveryDetails extends StatelessWidget {
         child: MaterialButton(
           color: primaryColor,
           onPressed: () {
-            address.isEmpty
+            deliveryAddressProvider.getDeliveryAddressDataList.isEmpty
                 ? Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => AddNewAddress(),
@@ -48,7 +54,9 @@ class DeliveryDetails extends StatelessWidget {
                   )
                 : Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => PaymentSummary(),
+                      builder: (context) => PaymentSummary(
+                        dam: widget.value,
+                      ),
                     ),
                   );
           },
@@ -56,7 +64,9 @@ class DeliveryDetails extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
           ),
           child: Text(
-            address.isEmpty ? "Add new address" : "Payment Summary",
+            deliveryAddressProvider.getDeliveryAddressDataList.isEmpty
+                ? "Add new address"
+                : "Payment Summary",
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -75,13 +85,29 @@ class DeliveryDetails extends StatelessWidget {
           Divider(
             height: 1,
           ),
-          address.isEmpty
+          deliveryAddressProvider.getDeliveryAddressDataList.isEmpty
               ? Container(
                   child: Center(child: Text("No Address")),
                 )
               : Column(
                   children: [
-                    ...address,
+                    ...deliveryAddressProvider.getDeliveryAddressDataList
+                        .map((e) {
+                      setState(() {
+                        widget.value = e;
+                      });
+                      return SingleAddress(
+                        address:
+                            "${e.flatNo}, ${e.building}, ${e.society}, ${e.area}, ${e.pincode},",
+                        name: "${e.firstName} ${e.lastName}",
+                        number: e.mobileNo,
+                        addressType: e.addressType == "AddressType.Other"
+                            ? "Other"
+                            : e.addressType == "AddressType.Home"
+                                ? "Home"
+                                : "Work",
+                      );
+                    }).toList(),
                   ],
                 )
         ],

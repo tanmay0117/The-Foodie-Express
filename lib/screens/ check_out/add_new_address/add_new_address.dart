@@ -4,6 +4,7 @@ import 'package:food_app/screens/%20check_out/add_new_address/inputs.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/checkout_provider.dart';
+import '../google_map/google_map.dart';
 
 enum AddressTypes {
   Home,
@@ -80,14 +81,22 @@ class _AddNewAddressState extends State<AddNewAddress> {
               controller: checkoutProvider.pincode,
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CustomGoogleMap(),
+                  ),
+                );
+              },
               child: Container(
                 height: 47,
                 width: double.infinity,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text("Set Location")],
+                  children: [
+                    Text("Set Location"),
+                  ],
                 ),
               ),
             ),
